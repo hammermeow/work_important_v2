@@ -2,7 +2,7 @@ select * from public.queues_by_customer_entity q
 Join nvrpt.finance_deck_cp f on f.task_queue_id = q.task_queue_id
 where f.task_queue_id = '4e1222ce-9425-46d9-b13c-8c7a0d2ffc95'
 
-
+--------------------------------------------------------------------------------------
 select count(distinct task_queue_id) 
 from (select task_queue_id,count(*) from public.queues_by_customer_entity group by 1
 having count(*)>1)
@@ -48,3 +48,8 @@ FROM
       FROM nvads.ramp_edx)
 group by 1
 having count(customer_grp_value)>1
+-------------------------------------------------------------------------------------------------------
+
+select top 1 * from public.queues_by_customer_entity q
+Join nvrpt.finance_deck_cp f on f.task_queue_id = q.task_queue_id
+where f.program is not null and f.program <> 'null'
