@@ -50,6 +50,10 @@ group by 1
 having count(customer_grp_value)>1
 -------------------------------------------------------------------------------------------------------
 
+select distinct q.program from public.queues_by_customer_entity q
+Join nvrpt.finance_deck_cp f on f.task_queue_id = q.task_queue_id
+where f.program is not null and f.program <> 'null'
+
 select top 1 * from public.queues_by_customer_entity q
 Join nvrpt.finance_deck_cp f on f.task_queue_id = q.task_queue_id
 where f.program is not null and f.program <> 'null'
