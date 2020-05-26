@@ -1,4 +1,3 @@
-DROP VIEW public.queues_by_customer_entity;
 
 CREATE OR REPLACE VIEW public.queues_by_customer_entity 
 AS
@@ -69,7 +68,8 @@ SELECT
        service_order_id,
        aim_work_type,
        order_name,
-       customer_grp_key
+       customer_grp_key,
+       program
 FROM (SELECT DISTINCT customer_grp_value,
              wtqd.vertical_or_sub_initiative,
              wtqd.device_or_initiative,
@@ -81,15 +81,18 @@ FROM (SELECT DISTINCT customer_grp_value,
              dtq.service_order_id,
              fso.aim_work_type,
              fso.order_name,
+             fso.program,
              customer_grp_key::VARCHAR(1000) AS customer_grp_key
       FROM nvdev.wbr_task_queue_dim wtqd
         LEFT JOIN nvads.dim_task_queue_view dtq ON wtqd.task_queue_id_key = dtq.task_queue_id
         LEFT JOIN (SELECT order_id,
                           cust_grp_id,
+                          program,
                           aim_work_type,
                           order_name
                    FROM (SELECT DISTINCT order_id,
                                 cust_grp_id,
+                                program,
                                 aim_work_type,
                                 order_name,
                                 ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY order_update_dt DESC) AS RNK
@@ -130,6 +133,7 @@ FROM (SELECT DISTINCT customer_grp_value,
              NULL AS service_order_id,
              NULL AS aim_work_type,
              NULL AS order_name,
+             Null AS program,
              NULL AS customer_grp_key
       FROM nvads.ramp_edx
       UNION ALL
@@ -144,6 +148,7 @@ FROM (SELECT DISTINCT customer_grp_value,
              NULL AS service_order_id,
              NULL AS aim_work_type,
              NULL AS order_name,
+             NULL As program,
              NULL AS customer_grp_key
       FROM nvrvd.tap_cycle) WITH NO SCHEMA BINDING;
 
